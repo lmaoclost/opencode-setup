@@ -7,7 +7,6 @@ SKILLS=(
     "obra/superpowers@brainstorming"
     "juliusbrussee/caveman@caveman"
     "intellectronica/agent-skills@context7"
-    "obra/superpowers@creating-debug-tests-and-iterating"
     "obra/superpowers@find-skills"
     "obra/superpowers@finishing-a-development-branch"
     "anthropics/skills@frontend-design"
@@ -20,7 +19,6 @@ SKILLS=(
     "obra/superpowers@skill-creator"
     "obra/superpowers@systematic-debugging"
     "obra/superpowers@test-driven-development"
-    "obra/superpowers@test-scenario-hygiene"
     "obra/superpowers@using-git-worktrees"
     "vercel-labs/agent-skills@vercel-react-best-practices"
     "obra/superpowers@webapp-testing"
@@ -38,6 +36,50 @@ install_skills() {
             npx skills add "$pkg" -g -y || echo "  - failed to install $pkg"
         fi
     done
+}
+
+install_custom_skills() {
+    echo "Installing custom skills from GitHub..."
+
+    # Skill 1: test-scenario-hygiene
+    if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ]; then
+        echo "  - test-scenario-hygiene already installed, skipping"
+    else
+        echo "  - cloning majiayu000/claude-skill-registry"
+        tmp_dir=$(mktemp -d)
+        if git clone --depth 1 https://github.com/majiayu000/claude-skill-registry "$tmp_dir/claude-skill-registry" 2>/dev/null; then
+            if [ -d "$tmp_dir/claude-skill-registry/skills/other/test-scenario-hygiene" ]; then
+                mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
+                cp -r "$tmp_dir/claude-skill-registry/skills/other/test-scenario-hygiene/"* "$HOME/.agents/skills/test-scenario-hygiene/"
+                echo "  - test-scenario-hygiene installed"
+            else
+                echo "  - WARNING: test-scenario-hygiene folder not found in repo"
+            fi
+        else
+            echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
+        fi
+        rm -rf "$tmp_dir"
+    fi
+
+    # Skill 2: creating-debug-tests-and-iterating
+    if [ -d "$HOME/.agents/skills/creating-debug-tests-and-iterating" ]; then
+        echo "  - creating-debug-tests-and-iterating already installed, skipping"
+    else
+        echo "  - cloning cbxm/ellipses"
+        tmp_dir=$(mktemp -d)
+        if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>/dev/null; then
+            if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
+                mkdir -p "$HOME/.agents/skills/creating-debug-tests-and-iterating"
+                cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* "$HOME/.agents/skills/creating-debug-tests-and-iterating/"
+                echo "  - creating-debug-tests-and-iterating installed"
+            else
+                echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
+            fi
+        else
+            echo "  - WARNING: failed to clone cbxm/ellipses"
+        fi
+        rm -rf "$tmp_dir"
+    fi
 }
 
 install_mcp() {
@@ -120,6 +162,7 @@ install_agents_md() {
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 install_skills
+install_custom_skills
 install_mcp
 merge_config
 copy_mcp_config

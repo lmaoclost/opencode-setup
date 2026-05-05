@@ -4,7 +4,7 @@ Install script for my opencode config, skills, and MCPs.
 
 ## What it installs
 
-- **21 skills** from the skills ecosystem
+- **19 skills** from the skills ecosystem + **2 custom skills** from GitHub
 - **Playwright MCP** for browser automation
 - **opencode.json** config (merged with existing)
 - **AGENTS.md** instructions
