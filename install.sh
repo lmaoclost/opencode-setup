@@ -51,7 +51,7 @@ install_custom_skills() {
     git config core.sparseCheckout true
     mkdir -p .git/info
     echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout
-    if git pull --depth 1 origin main 2>&1 | grep -q "Updating"; then
+    if git pull --depth 1 origin main 2>&1 | grep -q "Updating\|files"; then
         if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
             mkdir -p ~/.agents/skills/test-scenario-hygiene
             cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* ~/.agents/skills/test-scenario-hygiene/
@@ -69,7 +69,7 @@ install_custom_skills() {
     rm -rf ~/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null
     echo "  - cloning cbxm/ellipses"
     tmp_dir=$(mktemp -d)
-    if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>/dev/null; then
+    if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>&1; then
         if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
             mkdir -p ~/.agents/skills/creating-debug-tests-and-iterating
             cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* ~/.agents/skills/creating-debug-tests-and-iterating/
