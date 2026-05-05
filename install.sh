@@ -45,8 +45,13 @@ install_custom_skills() {
     rm -rf ~/.agents/skills/test-scenario-hygiene 2>/dev/null
     echo "  - cloning majiayu000/claude-skill-registry with sparse-checkout"
     tmp_dir=$(mktemp -d)
-    cd "$tmp_dir"
-    if git init -q && git remote add origin https://github.com/majiayu000/claude-skill-registry && git config core.sparseCheckout true && echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout && git pull --depth 1 origin main 2>/dev/null; then
+    cd "$tmp_dir" || { echo "  - WARNING: failed to cd"; rm -rf "$tmp_dir"; }
+    git init -q
+    git remote add origin https://github.com/majiayu000/claude-skill-registry
+    git config core.sparseCheckout true
+    mkdir -p .git/info
+    echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout
+    if git pull --depth 1 origin main 2>&1 | grep -q "Updating"; then
         if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
             mkdir -p ~/.agents/skills/test-scenario-hygiene
             cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* ~/.agents/skills/test-scenario-hygiene/
@@ -57,7 +62,7 @@ install_custom_skills() {
     else
         echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
     fi
-    cd - > /dev/null
+    cd ~ 2>/dev/null || true
     rm -rf "$tmp_dir"
 
     # Skill 2: creating-debug-tests-and-iterating
