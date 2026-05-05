@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "executablePath": "PATH_TO_BRAVE_EXECUTABLE",
+      "headless": true,
+      "args": ["--no-sandbox"]
+    }
+  }
+}
