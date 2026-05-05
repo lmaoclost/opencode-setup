@@ -41,24 +41,21 @@ install_skills() {
 install_custom_skills() {
     echo "Installing custom skills from GitHub..."
 
-    # Skill 1: test-scenario-hygiene
+    # Skill 1: test-scenario-hygiene (using curl to avoid cloning massive repo)
     if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ]; then
         echo "  - test-scenario-hygiene already installed, skipping"
     else
-        echo "  - cloning majiayu000/claude-skill-registry"
-        tmp_dir=$(mktemp -d)
-        if git clone --depth 1 https://github.com/majiayu000/claude-skill-registry "$tmp_dir/claude-skill-registry" 2>/dev/null; then
-            if [ -d "$tmp_dir/claude-skill-registry/skills/other/test-scenario-hygiene" ]; then
-                mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
-                cp -r "$tmp_dir/claude-skill-registry/skills/other/test-scenario-hygiene/"* "$HOME/.agents/skills/test-scenario-hygiene/"
+        echo "  - downloading test-scenario-hygiene from majiayu000/claude-skill-registry"
+        mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
+        if curl -sL "https://raw.githubusercontent.com/majiayu000/claude-skill-registry/main/skills/other/test-scenario-hygiene/SKILL.md" -o "$HOME/.agents/skills/test-scenario-hygiene/SKILL.md"; then
+            if curl -sL "https://raw.githubusercontent.com/majiayu000/claude-skill-registry/main/skills/other/test-scenario-hygiene/metadata.json" -o "$HOME/.agents/skills/test-scenario-hygiene/metadata.json" 2>/dev/null; then
                 echo "  - test-scenario-hygiene installed"
             else
-                echo "  - WARNING: test-scenario-hygiene folder not found in repo"
+                echo "  - WARNING: failed to download metadata.json"
             fi
         else
-            echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
+            echo "  - WARNING: failed to download test-scenario-hygiene"
         fi
-        rm -rf "$tmp_dir"
     fi
 
     # Skill 2: creating-debug-tests-and-iterating
