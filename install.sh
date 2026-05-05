@@ -41,21 +41,27 @@ install_skills() {
 install_custom_skills() {
     echo "Installing custom skills from GitHub..."
 
-    # Skill 1: test-scenario-hygiene (using curl to avoid cloning massive repo)
+    # Skill 1: test-scenario-hygiene (using git sparse-checkout for massive repo)
     if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ] && [ "$(ls -A $HOME/.agents/skills/test-scenario-hygiene 2>/dev/null)" ]; then
         echo "  - test-scenario-hygiene already installed, skipping"
     else
-        echo "  - downloading test-scenario-hygiene from majiayu000/claude-skill-registry"
-        mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
-        if curl -sL "https://raw.githubusercontent.com/majiayu000/claude-skill-registry/main/skills/other/test-scenario-hygiene/SKILL.md" -o "$HOME/.agents/skills/test-scenario-hygiene/SKILL.md"; then
-            if curl -sL "https://raw.githubusercontent.com/majiayu000/claude-skill-registry/main/skills/other/test-scenario-hygiene/metadata.json" -o "$HOME/.agents/skills/test-scenario-hygiene/metadata.json" 2>/dev/null; then
+        rm -rf "$HOME/.agents/skills/test-scenario-hygiene" 2>/dev/null
+        echo "  - cloning majiayu000/claude-skill-registry with sparse-checkout"
+        tmp_dir=$(mktemp -d)
+        cd "$tmp_dir"
+        if git init -q && git remote add origin https://github.com/majiayu000/claude-skill-registry && git config core.sparseCheckout true && echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout && git pull --depth 1 origin main 2>/dev/null; then
+            if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
+                mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
+                cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* "$HOME/.agents/skills/test-scenario-hygiene/"
                 echo "  - test-scenario-hygiene installed"
             else
-                echo "  - WARNING: failed to download metadata.json"
+                echo "  - WARNING: test-scenario-hygiene folder not found in repo"
             fi
         else
-            echo "  - WARNING: failed to download test-scenario-hygiene"
+            echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
         fi
+        cd - > /dev/null
+        rm -rf "$tmp_dir"
     fi
 
     # Skill 2: creating-debug-tests-and-iterating
