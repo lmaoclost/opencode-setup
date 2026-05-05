@@ -169,3 +169,5 @@ copy_mcp_config
 install_agents_md
 
 echo "=== Done! ==="
+echo ""
+read -p "Press Enter to exit..."
