@@ -42,47 +42,40 @@ install_custom_skills() {
     echo "Installing custom skills from GitHub..."
 
     # Skill 1: test-scenario-hygiene (using git sparse-checkout for massive repo)
-    if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ] && [ "$(ls -A $HOME/.agents/skills/test-scenario-hygiene 2>/dev/null)" ]; then
-        echo "  - test-scenario-hygiene already installed, skipping"
-    else
-        rm -rf "$HOME/.agents/skills/test-scenario-hygiene" 2>/dev/null
-        echo "  - cloning majiayu000/claude-skill-registry with sparse-checkout"
-        tmp_dir=$(mktemp -d)
-        cd "$tmp_dir"
-        if git init -q && git remote add origin https://github.com/majiayu000/claude-skill-registry && git config core.sparseCheckout true && echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout && git pull --depth 1 origin main 2>/dev/null; then
-            if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
-                mkdir -p "$HOME/.agents/skills/test-scenario-hygiene"
-                cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* "$HOME/.agents/skills/test-scenario-hygiene/"
-                echo "  - test-scenario-hygiene installed"
-            else
-                echo "  - WARNING: test-scenario-hygiene folder not found in repo"
-            fi
+    rm -rf ~/.agents/skills/test-scenario-hygiene 2>/dev/null
+    echo "  - cloning majiayu000/claude-skill-registry with sparse-checkout"
+    tmp_dir=$(mktemp -d)
+    cd "$tmp_dir"
+    if git init -q && git remote add origin https://github.com/majiayu000/claude-skill-registry && git config core.sparseCheckout true && echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout && git pull --depth 1 origin main 2>/dev/null; then
+        if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
+            mkdir -p ~/.agents/skills/test-scenario-hygiene
+            cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* ~/.agents/skills/test-scenario-hygiene/
+            echo "  - test-scenario-hygiene installed"
         else
-            echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
+            echo "  - WARNING: test-scenario-hygiene folder not found in repo"
         fi
-        cd - > /dev/null
-        rm -rf "$tmp_dir"
+    else
+        echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
     fi
+    cd - > /dev/null
+    rm -rf "$tmp_dir"
 
     # Skill 2: creating-debug-tests-and-iterating
-    if [ -d "$HOME/.agents/skills/creating-debug-tests-and-iterating" ] && [ "$(ls -A $HOME/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null)" ]; then
-        echo "  - creating-debug-tests-and-iterating already installed, skipping"
-    else
-        echo "  - cloning cbxm/ellipses"
-        tmp_dir=$(mktemp -d)
-        if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>/dev/null; then
-            if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
-                mkdir -p "$HOME/.agents/skills/creating-debug-tests-and-iterating"
-                cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* "$HOME/.agents/skills/creating-debug-tests-and-iterating/"
-                echo "  - creating-debug-tests-and-iterating installed"
-            else
-                echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
-            fi
+    rm -rf ~/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null
+    echo "  - cloning cbxm/ellipses"
+    tmp_dir=$(mktemp -d)
+    if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>/dev/null; then
+        if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
+            mkdir -p ~/.agents/skills/creating-debug-tests-and-iterating
+            cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* ~/.agents/skills/creating-debug-tests-and-iterating/
+            echo "  - creating-debug-tests-and-iterating installed"
         else
-            echo "  - WARNING: failed to clone cbxm/ellipses"
+            echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
         fi
-        rm -rf "$tmp_dir"
+    else
+        echo "  - WARNING: failed to clone cbxm/ellipses"
     fi
+    rm -rf "$tmp_dir"
 }
 
 install_mcp() {
