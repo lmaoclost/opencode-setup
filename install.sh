@@ -7,7 +7,7 @@ SKILLS=(
     "obra/superpowers@brainstorming"
     "juliusbrussee/caveman@caveman"
     "intellectronica/agent-skills@context7"
-    "obra/superpowers@find-skills"
+    "vercel-labs/skills@find-skills"
     "obra/superpowers@finishing-a-development-branch"
     "anthropics/skills@frontend-design"
     "dammyjay93/interface-design@interface-design"
@@ -15,21 +15,35 @@ SKILLS=(
     "astro-han/karpathy-llm-wiki@karpathy-llm-wiki"
     "kepano/obsidian-skills@obsidian-cli"
     "kepano/obsidian-skills@obsidian-markdown"
-    "obra/superpowers@root-cause-tracing"
-    "obra/superpowers@skill-creator"
+    "neolabhq/context-engineering-kit@root-cause-tracing"
+    "anthropics/skills@skill-creator"
     "obra/superpowers@systematic-debugging"
     "obra/superpowers@test-driven-development"
     "obra/superpowers@using-git-worktrees"
     "vercel-labs/agent-skills@vercel-react-best-practices"
-    "obra/superpowers@webapp-testing"
+    "anthropics/skills@webapp-testing"
     "obra/superpowers@writing-plans"
 )
 
+get_skills_dir() {
+    if [[ "$HOME" == /home/* ]]; then
+        # Git Bash on Windows - use USERPROFILE
+        if [ -n "$USERPROFILE" ]; then
+            echo "$USERPROFILE/.agents/skills"
+        else
+            echo "C:/Users/$USER/.agents/skills"
+        fi
+    else
+        echo "$HOME/.agents/skills"
+    fi
+}
+
 install_skills() {
     echo "Installing skills..."
+    SKILLS_DIR=$(get_skills_dir)
     for pkg in "${SKILLS[@]}"; do
         skill_name=$(echo "$pkg" | sed 's/.*@//')
-        if [ -d "$HOME/.agents/skills/$skill_name" ]; then
+        if [ -d "$SKILLS_DIR/$skill_name" ]; then
             echo "  - $skill_name already installed, skipping"
         else
             echo "  - installing $pkg"
@@ -39,47 +53,10 @@ install_skills() {
 }
 
 install_custom_skills() {
-    echo "Installing custom skills from GitHub..."
+    echo "Installing custom skills from registry..."
 
-    # Skill 1: test-scenario-hygiene (using git sparse-checkout for massive repo)
-    rm -rf ~/.agents/skills/test-scenario-hygiene 2>/dev/null
-    echo "  - cloning majiayu000/claude-skill-registry with sparse-checkout"
-    tmp_dir=$(mktemp -d)
-    cd "$tmp_dir" || { echo "  - WARNING: failed to cd"; rm -rf "$tmp_dir"; }
-    git init -q
-    git remote add origin https://github.com/majiayu000/claude-skill-registry
-    git config core.sparseCheckout true
-    mkdir -p .git/info
-    echo "skills/other/test-scenario-hygiene/*" > .git/info/sparse-checkout
-    if git pull --depth 1 origin main 2>&1 | grep -q "Updating\|files"; then
-        if [ -d "$tmp_dir/skills/other/test-scenario-hygiene" ]; then
-            mkdir -p ~/.agents/skills/test-scenario-hygiene
-            cp -r "$tmp_dir/skills/other/test-scenario-hygiene/"* ~/.agents/skills/test-scenario-hygiene/
-            echo "  - test-scenario-hygiene installed"
-        else
-            echo "  - WARNING: test-scenario-hygiene folder not found in repo"
-        fi
-    else
-        echo "  - WARNING: failed to clone majiayu000/claude-skill-registry"
-    fi
-    cd ~ 2>/dev/null || true
-    rm -rf "$tmp_dir"
-
-    # Skill 2: creating-debug-tests-and-iterating
-    rm -rf ~/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null
-    echo "  - cloning cbxm/ellipses"
-    tmp_dir=$(mktemp -d)
-    clone_result=$(git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>&1)
-    echo "DEBUG clone result: $clone_result"
-    if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
-        echo "DEBUG: source folder exists, copying..."
-        mkdir -p ~/.agents/skills/creating-debug-tests-and-iterating
-        cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* ~/.agents/skills/creating-debug-tests-and-iterating/
-        echo "  - creating-debug-tests-and-iterating installed"
-    else
-        echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
-    fi
-    rm -rf "$tmp_dir"
+    # creating-debug-tests-and-iterating
+    npx skills add cbxm/ellipses@creating-debug-tests-and-iterating -g -y || echo "  - failed to install creating-debug-tests-and-iterating"
 }
 
 install_mcp() {
