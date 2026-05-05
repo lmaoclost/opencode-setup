@@ -69,16 +69,15 @@ install_custom_skills() {
     rm -rf ~/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null
     echo "  - cloning cbxm/ellipses"
     tmp_dir=$(mktemp -d)
-    if git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>&1; then
-        if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
-            mkdir -p ~/.agents/skills/creating-debug-tests-and-iterating
-            cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* ~/.agents/skills/creating-debug-tests-and-iterating/
-            echo "  - creating-debug-tests-and-iterating installed"
-        else
-            echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
-        fi
+    clone_result=$(git clone --depth 1 https://github.com/cbxm/ellipses "$tmp_dir/ellipses" 2>&1)
+    echo "DEBUG clone result: $clone_result"
+    if [ -d "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating" ]; then
+        echo "DEBUG: source folder exists, copying..."
+        mkdir -p ~/.agents/skills/creating-debug-tests-and-iterating
+        cp -r "$tmp_dir/ellipses/claude/.claude/profiles/amol/skills/creating-debug-tests-and-iterating/"* ~/.agents/skills/creating-debug-tests-and-iterating/
+        echo "  - creating-debug-tests-and-iterating installed"
     else
-        echo "  - WARNING: failed to clone cbxm/ellipses"
+        echo "  - WARNING: creating-debug-tests-and-iterating folder not found in repo"
     fi
     rm -rf "$tmp_dir"
 }
