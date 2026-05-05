@@ -42,7 +42,7 @@ install_custom_skills() {
     echo "Installing custom skills from GitHub..."
 
     # Skill 1: test-scenario-hygiene (using curl to avoid cloning massive repo)
-    if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ]; then
+    if [ -d "$HOME/.agents/skills/test-scenario-hygiene" ] && [ "$(ls -A $HOME/.agents/skills/test-scenario-hygiene 2>/dev/null)" ]; then
         echo "  - test-scenario-hygiene already installed, skipping"
     else
         echo "  - downloading test-scenario-hygiene from majiayu000/claude-skill-registry"
@@ -59,7 +59,7 @@ install_custom_skills() {
     fi
 
     # Skill 2: creating-debug-tests-and-iterating
-    if [ -d "$HOME/.agents/skills/creating-debug-tests-and-iterating" ]; then
+    if [ -d "$HOME/.agents/skills/creating-debug-tests-and-iterating" ] && [ "$(ls -A $HOME/.agents/skills/creating-debug-tests-and-iterating 2>/dev/null)" ]; then
         echo "  - creating-debug-tests-and-iterating already installed, skipping"
     else
         echo "  - cloning cbxm/ellipses"
