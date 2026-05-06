@@ -86,7 +86,7 @@ The following skills are available and should be read when needed:
 |------|-------------|----------|
 | `brainstorming` | Explore user intent and requirements before creative work | ~/.agents/skills/brainstorming/SKILL.md |
 | `caveman` | Ultra-compressed communication mode (~75% token reduction) | ~/.agents/skills/caveman/SKILL.md |
-| `context7` | Context7 MCP for documentation lookup | ~/.agents/skills/context7/SKILL.md |
+| `context7-mcp` | Context7 MCP for documentation lookup | ~/.agents/skills/context7-mcp/SKILL.md |
 | `creating-debug-tests-and-iterating` | Debug externally-facing behavior without stack traces | ~/.agents/skills/creating-debug-tests-and-iterating/SKILL.md |
 | `find-skills` | Discover and install agent skills from the ecosystem | ~/.agents/skills/find-skills/SKILL.md |
 | `finishing-a-development-branch` | Guide completion: merge, PR, or cleanup | ~/.agents/skills/finishing-a-development-branch/SKILL.md |

@@ -6,7 +6,7 @@ echo "=== opencode-setup installer ==="
 SKILLS=(
     "obra/superpowers@brainstorming"
     "juliusbrussee/caveman@caveman"
-    "intellectronica/agent-skills@context7"
+    "upstash/context7@context7-mcp"
     "vercel-labs/skills@find-skills"
     "obra/superpowers@finishing-a-development-branch"
     "anthropics/skills@frontend-design"
