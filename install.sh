@@ -10,6 +10,7 @@ SKILLS=(
     "vercel-labs/skills@find-skills"
     "obra/superpowers@finishing-a-development-branch"
     "anthropics/skills@frontend-design"
+    "mattpocock/skills@grill-with-docs"
     "dammyjay93/interface-design@interface-design"
     "forrestchang/andrej-karpathy-skills@karpathy-guidelines"
     "astro-han/karpathy-llm-wiki@karpathy-llm-wiki"

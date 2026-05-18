@@ -91,6 +91,7 @@ The following skills are available and should be read when needed:
 | `find-skills` | Discover and install agent skills from the ecosystem | ~/.agents/skills/find-skills/SKILL.md |
 | `finishing-a-development-branch` | Guide completion: merge, PR, or cleanup | ~/.agents/skills/finishing-a-development-branch/SKILL.md |
 | `frontend-design` | Create distinctive production-grade frontend interfaces | ~/.agents/skills/frontend-design/SKILL.md |
+| `grill-with-docs` | Interview user relentlessly about plan/design until shared understanding | ~/.agents/skills/grill-with-docs/SKILL.md |
 | `interface-design` | Dashboards, admin panels, apps, tools design | ~/.agents/skills/interface-design/SKILL.md |
 | `karpathy-guidelines` | Behavioral guidelines to reduce LLM coding mistakes | ~/.agents/skills/karpathy-guidelines/SKILL.md |
 | `karpathy-llm-wiki` | Build and maintain personal LLM-powered knowledge base | ~/.agents/skills/karpathy-llm-wiki/SKILL.md |
