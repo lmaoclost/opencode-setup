@@ -137,11 +137,93 @@ install_agents_md() {
     echo "  - AGENTS.md installed"
 }
 
+install_rtk() {
+    echo "Installing RTK..."
+    if command -v rtk &> /dev/null; then
+        echo "  - rtk already installed: $(rtk --version 2>&1)"
+    else
+        OS_TYPE=$(uname -s)
+        if [[ "$OS_TYPE" == "Darwin" ]]; then
+            echo "  - installing via Homebrew..."
+            brew install rtk 2>/dev/null || {
+                echo "  - Homebrew failed, trying cargo..."
+                cargo install --git https://github.com/rtk-ai/rtk
+            }
+        elif [[ "$OS_TYPE" == "Linux" ]]; then
+            echo "  - installing via script..."
+            curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+        else
+            echo "  - Windows detected, downloading release..."
+            RTK_VERSION=$(curl -s https://api.github.com/repos/rtk-ai/rtk/releases/latest | grep -o '"tag_name": "[^"]*"' | cut -d'"' -f4)
+            RTK_URL="https://github.com/rtk-ai/rtk/releases/download/${RTK_VERSION}/rtk-x86_64-pc-windows-msvc.zip"
+            TEMP_ZIP="/tmp/rtk.zip"
+            curl -fsSL "$RTK_URL" -o "$TEMP_ZIP"
+            unzip -o "$TEMP_ZIP" -d "$HOME/.local/bin"
+            rm -f "$TEMP_ZIP"
+            if [ -f "$HOME/.local/bin/rtk.exe" ]; then
+                echo "  - RTK installed to $HOME/.local/bin"
+            else
+                echo "  - RTK install failed, try: cargo install --git https://github.com/rtk-ai/rtk"
+            fi
+        fi
+    fi
+}
+
+install_rtk_plugin() {
+    echo "Installing RTK OpenCode plugin..."
+    CONFIG_DIR="$HOME/.config/opencode"
+    mkdir -p "$CONFIG_DIR/plugins"
+
+    if [ -f "$CONFIG_DIR/plugins/rtk.ts" ]; then
+        echo "  - plugin already installed, skipping"
+    else
+        cp "$SCRIPT_DIR/config/plugins/rtk.ts" "$CONFIG_DIR/plugins/rtk.ts"
+        echo "  - plugin installed"
+    fi
+}
+
+install_rtk_package() {
+    echo "Installing RTK plugin dependencies..."
+    CONFIG_DIR="$HOME/.config/opencode"
+
+    if [ -d "$CONFIG_DIR" ]; then
+        cd "$CONFIG_DIR"
+        if [ -f "package.json" ]; then
+            if grep -q "@opencode-ai/plugin" "package.json"; then
+                echo "  - @opencode-ai/plugin already in package.json, skipping"
+            else
+                echo "  - adding @opencode-ai/plugin to package.json"
+                if command -v jq &> /dev/null; then
+                    tmp=$(mktemp)
+                    jq '.dependencies["@opencode-ai/plugin"] = "^1.14.18"' package.json > "$tmp"
+                    mv "$tmp" package.json
+                else
+                    echo "  - jq not found, manual edit needed in package.json"
+                fi
+            fi
+        else
+            echo "  - no package.json, copying from template..."
+            cp "$SCRIPT_DIR/config/package.json" package.json
+        fi
+        if [ -d "node_modules" ]; then
+            echo "  - node_modules exists, run npm install manually to update"
+        else
+            if command -v npm &> /dev/null; then
+                echo "  - running npm install..."
+                npm install
+            fi
+        fi
+    fi
+}
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 install_skills
 install_custom_skills
 install_mcp
+install_rtk
+install_rtk_plugin
+install_rtk_package
 merge_config
 copy_mcp_config
 install_agents_md
