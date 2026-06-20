@@ -24,6 +24,7 @@ SKILLS=(
     "vercel-labs/agent-skills@vercel-react-best-practices"
     "anthropics/skills@webapp-testing"
     "obra/superpowers@writing-plans"
+    "mvanhorn/last30days-skill@last30days"
 )
 
 get_skills_dir() {
