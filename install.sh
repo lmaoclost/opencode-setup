@@ -25,6 +25,7 @@ SKILLS=(
     "anthropics/skills@webapp-testing"
     "obra/superpowers@writing-plans"
     "mvanhorn/last30days-skill@last30days"
+    "pbakaus/impeccable@impeccable"
 )
 
 get_skills_dir() {
