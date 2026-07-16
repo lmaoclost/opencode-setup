@@ -9,6 +9,7 @@ SKILLS=(
     "upstash/context7@context7-mcp"
     "vercel-labs/skills@find-skills"
     "obra/superpowers@finishing-a-development-branch"
+    "github/awesome-copilot@technology-stack-blueprint-generator"
     "anthropics/skills@frontend-design"
     "mattpocock/skills@grill-with-docs"
     "dammyjay93/interface-design@interface-design"
@@ -56,10 +57,7 @@ install_skills() {
 }
 
 install_custom_skills() {
-    echo "Installing custom skills from registry..."
-
-    # creating-debug-tests-and-iterating
-    npx skills add cbxm/ellipses@creating-debug-tests-and-iterating -g -y || echo "  - failed to install creating-debug-tests-and-iterating"
+    echo "No custom skills to install"
 }
 
 install_mcp() {
