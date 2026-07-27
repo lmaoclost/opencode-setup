@@ -1,0 +1,41 @@
+{
+  "skill_name": "new-project-interview",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "quero criar um saas pra advogados gerenciarem processos. vou fazer sozinho, preciso entregar rapido pq ja tenho um cliente esperando. domino python e um pouco de js. orçamento baixo, queria gastar no maximo 50 conto por mes de infra. o que vc recomenda?",
+      "expected_output": "Entrevista guiada que leva o usuario pelas 6 fases, documentando decisoes em docs/setup/decisions.md. Recomendacao final: Django + PostgreSQL em VPS nacional (HostGator).",
+      "expectations": [
+        "A entrevista faz 1 pergunta por vez, esperando resposta",
+        "Cada pergunta inclui recomendacao com pros/cons",
+        "Decisoes sao documentadas em docs/setup/decisions.md",
+        "A recomendacao final considera o orçamento baixo e publico BR",
+        "O decisions.md contem todas as 6 secoes (Purpose, Stack, MVP, Deploy, Testing, DX)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "to aprendendo react e queria fazer um projetinho pessoal p/ portfolio. algo com nextjs talvez? quero aprender na prática. nao tenho pressa, é p/ estudos mesmo. o que acha?",
+      "expected_output": "Entrevista que propoe NextJS como opcao natural, mas explora alternativas. Recomendacao deve focar em aprendizado, nao em entrega rapida.",
+      "expectations": [
+        "A entrevista pergunta o objetivo antes de recomendar stack",
+        "Recomendacao prioriza aprendizado em vez de entrega rapida",
+        "Decisoes documentadas em docs/setup/decisions.md",
+        "O decisions.md reflete proposito de aprendizado",
+        "Nao recomenda ferramentas pagas ou infra cara"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "estou montando um time de 3 devs pra criar um marketplace. vamos usar js. ja decidi nextjs + postgres. quero ajuda com a estrutura inicial, deploy e testes. o que seria um bom setup inicial?",
+      "expected_output": "Entrevista que respeita as decisoes ja tomadas (NextJS + Postgres), nao pergunta de novo, mas explora as fases restantes. Foco em estrutura MVP, deploy e testes p/ time.",
+      "expectations": [
+        "Nao pergunta sobre stack (ja foi decidida), apenas documenta",
+        "Foco em estrutura de time: branch strategy, code review, CI/CD",
+        "Decisoes documentadas em docs/setup/decisions.md",
+        "Recomenda tests obrigatorios antes de merge (time)",
+        "Sugere estrutura de pastas e convencoes de codigo"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "skill_name": "topic-distill",
+  "evals": [
+    {
+      "id": 1,
+      "name": "youtube-zettelkasten",
+      "prompt": "/distill https://www.youtube.com/watch?v=rOSZOCoq9qI --context \"quero aplicar no vault Obsidian\"",
+      "expected_output": "List of topics in Portuguese with timestamps, explanations, quotes, tags, connections section, and file saved to 3. Resources/raw-topics/",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "blog-atomic-habits",
+      "prompt": "/distill https://jamesclear.com/atomic-habits",
+      "expected_output": "List of topics in Portuguese from the article with explanations, quotes, tags, connections section, and file saved to 3. Resources/raw-topics/",
+      "files": []
+    }
+  ]
+}

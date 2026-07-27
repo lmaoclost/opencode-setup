@@ -4,7 +4,7 @@ Install script for my opencode config, skills, and MCPs.
 
 ## What it installs
 
-- **22 skills** from the skills ecosystem + **1 custom skill** from GitHub
+- **23 skills** from the skills ecosystem + **2 custom skills** bundled in repo
 - **Playwright MCP** for browser automation
 - **RTK** (Rust Token Killer) for CLI output compression
 - **opencode.json** config (merged with existing)

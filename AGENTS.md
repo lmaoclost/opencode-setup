@@ -61,6 +61,7 @@ The following skills are available and should be read when needed:
 | `karpathy-guidelines` | Behavioral guidelines to reduce LLM coding mistakes | ~/.agents/skills/karpathy-guidelines/SKILL.md |
 | `karpathy-llm-wiki` | Build and maintain personal LLM-powered knowledge base | ~/.agents/skills/karpathy-llm-wiki/SKILL.md |
 | `last30days` | Research recent discussions and posts on any topic | ~/.agents/skills/last30days/SKILL.md |
+| `new-project-interview` | Guided interview for new project setup decisions | ~/.agents/skills/new-project-interview/SKILL.md |
 | `obsidian-cli` | Obsidian vault CLI operations | ~/.agents/skills/obsidian-cli/SKILL.md |
 | `obsidian-markdown` | Obsidian markdown formatting | ~/.agents/skills/obsidian-markdown/SKILL.md |
 | `root-cause-tracing` | Trace bugs backward through call stack | ~/.agents/skills/root-cause-tracing/SKILL.md |
@@ -68,8 +69,10 @@ The following skills are available and should be read when needed:
 | `systematic-debugging` | Four-phase debugging framework | ~/.agents/skills/systematic-debugging/SKILL.md |
 | `technology-stack-blueprint-generator` | Generate tech stack blueprints with architecture docs | ~/.agents/skills/technology-stack-blueprint-generator/SKILL.md |
 | `test-driven-development` | Write tests first, then minimal implementation code | ~/.agents/skills/test-driven-development/SKILL.md |
+| `topic-distill` | Extract key topics and concepts from a URL | ~/.agents/skills/topic-distill/SKILL.md |
 | `using-git-worktrees` | Create isolated git worktrees for feature work | ~/.agents/skills/using-git-worktrees/SKILL.md |
 | `vercel-react-best-practices` | React/Next.js performance optimization (40+ rules) | ~/.agents/skills/vercel-react-best-practices/SKILL.md |
+| `web-security-testing` | Web application security testing workflow for OWASP Top 10 | ~/.agents/skills/web-security-testing/SKILL.md |
 | `webapp-testing` | Interact with local web apps using Playwright | ~/.agents/skills/webapp-testing/SKILL.md |
 | `writing-plans` | Create structured plans for multi-step tasks | ~/.agents/skills/writing-plans/SKILL.md |
 

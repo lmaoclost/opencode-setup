@@ -27,6 +27,7 @@ SKILLS=(
     "obra/superpowers@writing-plans"
     "mvanhorn/last30days-skill@last30days"
     "pbakaus/impeccable@impeccable"
+    "sickn33/antigravity-awesome-skills@web-security-testing"
 )
 
 get_skills_dir() {
@@ -57,7 +58,20 @@ install_skills() {
 }
 
 install_custom_skills() {
-    echo "No custom skills to install"
+    echo "Installing custom skills..."
+    SKILLS_DIR=$(get_skills_dir)
+    for skill_dir in "$SCRIPT_DIR/skills"/*/; do
+        if [ -d "$skill_dir" ]; then
+            skill_name=$(basename "$skill_dir")
+            if [ -d "$SKILLS_DIR/$skill_name" ]; then
+                echo "  - $skill_name already installed, skipping"
+            else
+                echo "  - installing $skill_name"
+                mkdir -p "$SKILLS_DIR/$skill_name"
+                cp -r "$skill_dir"/* "$SKILLS_DIR/$skill_name/"
+            fi
+        fi
+    done
 }
 
 install_mcp() {
