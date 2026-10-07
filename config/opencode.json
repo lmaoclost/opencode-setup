@@ -13,6 +13,41 @@
       "type": "local",
       "command": ["npx", "@playwright/mcp@latest", "--config", "~/.config/opencode/playwright-mcp-brave.json"],
       "enabled": true
+    },
+    "ai-memory": {
+      "type": "remote",
+      "url": "http://127.0.0.1:49374/mcp",
+      "enabled": true
+    }
+  },
+  "provider": {
+    "ollama": {
+      "name": "Ollama Local",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "YOUR_OLLAMA_BASE_URL",
+        "apiKey": "YOUR_API_KEY_HERE"
+      },
+      "models": {
+        "nemotron3:33b": {
+          "name": "Nemotron 3 33B"
+        },
+        "qwen3.6:35b": {
+          "name": "Qwen 3.6"
+        },
+        "qwen3.8:latest": {
+          "name": "Qwen 3.8"
+        },
+        "gpt-oss:20b": {
+          "name": "GPT-OSS"
+        },
+        "deepseek-v4-pro:cloud ": {
+          "name": "DeepSeek V4 Pro"
+        },
+        "glm-5.3-flash:cloud": {
+          "name": "GLM-5.3"
+        }
+      }
     }
   }
 }

@@ -2,8 +2,8 @@
   "browser": {
     "browserName": "chromium",
     "launchOptions": {
-      "executablePath": "PATH_TO_BRAVE_EXECUTABLE",
-      "headless": true,
+      "executablePath": "/usr/bin/brave",
+      "headless": false,
       "args": ["--no-sandbox"]
     }
   }

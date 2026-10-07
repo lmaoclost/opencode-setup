@@ -7,6 +7,13 @@ ACTIVE EVERY RESPONSE. No revert after many turns. No filler drift.
 Code/commits/PRs: normal. Off: "stop caveman" / "normal mode".
 <!-- caveman -->
 
+<!-- anti-slop -->
+Anti-slop ACTIVE in every response and every prose artifact (README, docs,
+commits, PRs, code comments), EN + PT. Load skill({ name: 'anti-slop' }) for
+the banned vocabulary, banned patterns, and per-artifact rules. Plain
+is/has copulas, plain verbs, specific facts. Slop patterns are a bug.
+<!-- anti-slop -->
+
 <!-- context7 --> to fetch current documentation whenever the user asks about a library, framework, SDK, API, CLI tool, or cloud service -- even well-known ones like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. This includes API syntax, configuration, version migration, library-specific debugging, setup instructions, and CLI tool usage. Use even when you think you know the answer -- your training data may not reflect recent changes. Prefer this over web search for library docs.
 
 Do not use for: refactoring, writing scripts from scratch, debugging business logic, code review, or general programming concepts.
@@ -51,6 +58,7 @@ The following skills are available and should be read when needed:
 |------|-------------|----------|
 | `brainstorming` | Explore user intent and requirements before creative work | ~/.agents/skills/brainstorming/SKILL.md |
 | `caveman` | Ultra-compressed communication mode (~75% token reduction) | ~/.agents/skills/caveman/SKILL.md |
+| `anti-slop` | Anti-AI-slop writing rules, EN + PT (vocab, patterns, per-artifact) | ~/.agents/skills/anti-slop/SKILL.md |
 | `context7-mcp` | Context7 MCP for documentation lookup | ~/.agents/skills/context7-mcp/SKILL.md |
 | `find-skills` | Discover and install agent skills from the ecosystem | ~/.agents/skills/find-skills/SKILL.md |
 | `finishing-a-development-branch` | Guide completion: merge, PR, or cleanup | ~/.agents/skills/finishing-a-development-branch/SKILL.md |

@@ -64,7 +64,8 @@ install_custom_skills() {
         if [ -d "$skill_dir" ]; then
             skill_name=$(basename "$skill_dir")
             if [ -d "$SKILLS_DIR/$skill_name" ]; then
-                echo "  - $skill_name already installed, skipping"
+                echo "  - $skill_name already installed, syncing files"
+                rsync -a "$skill_dir" "$SKILLS_DIR/" 2>/dev/null || cp -r "$skill_dir"/* "$SKILLS_DIR/$skill_name/"
             else
                 echo "  - installing $skill_name"
                 mkdir -p "$SKILLS_DIR/$skill_name"

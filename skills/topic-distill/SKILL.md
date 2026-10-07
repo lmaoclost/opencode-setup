@@ -19,7 +19,7 @@ The `--context` flag is optional. If provided, use it to prioritize or highlight
 
 | Source | Method |
 |--------|--------|
-| **YouTube** | Extract transcript via `yt-dlp` (must be in PATH). Prefer Portuguese subtitles first, fall back to English. |
+| **YouTube** | transcribeme API first (target-language captions, cleaned + translated server-side); `yt-dlp` CLI fallback (must be in PATH) when the backend is unreachable or the job fails. |
 | **Blog/Article** | Web fetch the page content. If paywalled or dynamic content blocks access, notify the user. |
 
 ## Output Format
@@ -30,7 +30,7 @@ The output goes to **both** the chat and a file. The file is saved at:
 3. Resources/raw-topics/YYYY-MM-DD-slugified-title.md
 ```
 
-Relative to the vault root: `C:\Users\renan\Documents\obsidian-backup`
+Relative to the vault root: `/home/renan/code/obsidian-backup`
 
 ### Chat Output
 
@@ -71,8 +71,44 @@ Use the exact template in `references/raw-topic-template.md`. The file must incl
 
 ### Step 2a — YouTube: extract transcript
 
-Run:
-```powershell
+**Tier 1 — transcribeme API (preferred).** Probe health first:
+
+```bash
+curl -s $TRANSCRIBEME_API/health
+# want {"status":"ok", ...} — any other outcome means "backend down", skip to Tier 2
+```
+
+If healthy, queue and poll:
+
+```bash
+curl -s -X POST $TRANSCRIBEME_API/jobs -H 'Content-Type: application/json' -d "{\"url\": \"<url>\"}"
+# → {"batch_id": "...", ...} (202, job queued instantly)
+```
+
+Poll `GET $TRANSCRIBEME_API/jobs?limit=5` until the newest job is `completed` (backoff 15s; give up after ~10 min). Then:
+
+```bash
+curl -s $TRANSCRIBEME_API/jobs/<job_id>/transcript
+```
+
+**Timestamps (preferred over plain transcript).** New transcripts expose timed ~30s blocks:
+
+```bash
+curl -s $TRANSCRIBEME_API/jobs/<job_id>/transcript/1/segments
+# → [{"start":"01:23","end":"01:31","text":"..."}, ...]
+```
+
+- `200` → build a **timestamp map**: normalized segment text → `start` (normalization: lowercase, strip punctuation/diacritics for matching)
+- `404 {"detail":"segments not available..."}` → legacy transcript without timings; mark `**Timestamp:** n/a (API transcript)` per topic
+- The plain `/transcript` text is the same content (block texts joined); use `/segments` for both quoting and timestamps
+
+**Matching a topic to its timestamp:** take the topic's excerpt (or its most distinctive 5+ words), normalize, and find the first segment whose normalized text contains it. The segment's `start` is the `**Timestamp:**`. If nothing matches (excerpt got rephrased across blocks), fall back to a keyword-overlap scan (best normalized-token overlap) before giving up to `n/a`.
+
+If the job ends `failed`/`canceled`, or the backend is down/unreachable → Tier 2, silently.
+
+**Tier 2 — `yt-dlp` CLI fallback.** Run:
+
+```bash
 yt-dlp --skip-download --write-auto-subs --sub-langs pt,en --output "%(id)s" "<url>"
 ```
 
@@ -83,12 +119,13 @@ Read the `.pt.vtt` or `.en.vtt` file. **Parse VTT robustly:**
 - Remove sequence numbers (lines with only digits)
 - Remove timestamp lines (`00:00:00.000 --> 00:00:03.000`)
 - Remove inline timestamp tags: `<00:00:00.880><c>` and `</c>`
+- Remove speaker prefixes (`>> Name:`), bracketed noise (`[Music]`, `[música]`, `[risos]`), and consecutive duplicate lines
 - Join fragmented text lines belonging to the same caption
 - Result: clean paragraph text with speaker turns preserved
 
 If Portuguese subtitles fail (429 rate limit, unavailable), **automatically fall back to English** without notifying the user unless both fail.
 
-Clean up the VTT files after reading.
+Clean up the VTT files after reading (Tier 2 only — Tier 1 leaves no artifacts).
 
 ### Step 2b — Blog: fetch content
 
@@ -112,17 +149,17 @@ Read the full content carefully. Extract distinct concepts and ideas. Criteria:
 ### Step 4 — Present and save
 
 1. Output the full distilled list to the chat
-2. Save the file using the template format to `3. Resources/raw-topics/YYYY-MM-DD-slugified-title.md`
+2. Ensure `3. Resources/raw-topics/` exists (`mkdir -p` if missing), then save the file using the template format to `3. Resources/raw-topics/YYYY-MM-DD-slugified-title.md`
 
-### Step 5 — Cleanup (YouTube only)
+### Step 5 — Cleanup (YouTube Tier 2 only)
 
-VTT files are deleted immediately after reading in Step 2a. No artifacts left.
+VTT files are deleted immediately after reading in Step 2a Tier 2. Tier 1 (API) leaves no local artifacts. No transcribeme jobs are deleted — they remain in the queue history with their versions.
 
 ## Rules
 
 - **Language:** Everything in Portuguese (explanations, tags, connections section headers)
 - **Quotes:** Literal excerpts from the source, formatted with `>` blockquote
-- **Timestamps:** Include for YouTube, omit for blog
+- **Timestamps:** Include for YouTube — from the transcribeme `/segments` endpoint (real MM:SS), from VTT cue times (Tier 2), or `n/a` as last resort
 - **Explanation:** Complete enough for the user to write a zettelkasten note. No artificial limits.
 - **Tags:** In Portuguese, extracted from the concept's domain
 - **Connections:** Always include, even if brief
@@ -131,7 +168,8 @@ VTT files are deleted immediately after reading in Step 2a. No artifacts left.
 
 ## Configuration
 
-Vault root: `C:\Users\renan\Documents\obsidian-backup`  *(adjust to your vault path)*
+Vault root: `/home/renan/code/obsidian-backup`
 Raw topics directory: `3. Resources/raw-topics`
 Language: Portuguese
-YouTube subtitles priority: Portuguese → English (auto-fallback on 429/unavailable)
+Transcribeme API: `http://192.168.100.2:8016` (LAN; `http://localhost:8000` for local dev)
+YouTube transcript priority: transcribeme API (target-language captions → NLLB → whisper) → `yt-dlp` CLI with Portuguese → English subtitle fallback (on backend-down/job-failed/429/unavailable)
