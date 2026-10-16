@@ -110,19 +110,23 @@ merge_config() {
         # Simple merge: add missing keys from template to existing
         # This is a basic implementation - for complex merges, use jq
         if command -v jq &> /dev/null; then
+            TEMPLATE=$(mktemp)
+            # Expand the __HOME__ placeholder before merging
+            sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$TEMPLATE"
             tmp=$(mktemp)
-            jq -s '.[0] * .[1]' "$CONFIG_FILE" "$SCRIPT_DIR/config/opencode.json" > "$tmp"
+            jq -s '.[0] * .[1]' "$CONFIG_FILE" "$TEMPLATE" > "$tmp"
             mv "$tmp" "$CONFIG_FILE"
+            rm -f "$TEMPLATE"
             echo "  - config merged"
         else
             echo "  - jq not found, copying template (backup existing first)"
             cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
-            cp "$SCRIPT_DIR/config/opencode.json" "$CONFIG_FILE"
+            sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$CONFIG_FILE"
             echo "  - template copied (backup at $CONFIG_FILE.backup)"
         fi
     else
         echo "  - no existing config, copying template"
-        cp "$SCRIPT_DIR/config/opencode.json" "$CONFIG_FILE"
+        sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$CONFIG_FILE"
     fi
 }
 
@@ -204,13 +208,13 @@ install_rtk_package() {
     if [ -d "$CONFIG_DIR" ]; then
         cd "$CONFIG_DIR"
         if [ -f "package.json" ]; then
-            if grep -q "@opencode-ai/plugin" "package.json"; then
-                echo "  - @opencode-ai/plugin already in package.json, skipping"
+            if grep -q '"@opencode/plugin"' "package.json"; then
+                echo "  - @opencode/plugin v2 already in package.json, skipping"
             else
-                echo "  - adding @opencode-ai/plugin to package.json"
+                echo "  - adding @opencode/plugin v2 to package.json"
                 if command -v jq &> /dev/null; then
                     tmp=$(mktemp)
-                    jq '.dependencies["@opencode-ai/plugin"] = "^1.14.18"' package.json > "$tmp"
+                    jq '.dependencies["@opencode/plugin"] = "^2.0.31" | del(.dependencies["@opencode-ai/plugin"])' package.json > "$tmp"
                     mv "$tmp" package.json
                 else
                     echo "  - jq not found, manual edit needed in package.json"

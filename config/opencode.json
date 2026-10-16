@@ -1,30 +1,30 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": true,
-      "headers": {
-        "CONTEXT7_API_KEY": "YOUR_API_KEY_HERE"
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "oauth": false,
+        "headers": {
+          "CONTEXT7_API_KEY": "YOUR_API_KEY_HERE"
+        }
+      },
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "@playwright/mcp@latest", "--config", "__HOME__/.config/opencode/playwright-mcp-brave.json"]
+      },
+      "ai-memory": {
+        "type": "remote",
+        "url": "http://127.0.0.1:49374/mcp",
+        "oauth": false
       }
-    },
-    "playwright": {
-      "type": "local",
-      "command": ["npx", "@playwright/mcp@latest", "--config", "~/.config/opencode/playwright-mcp-brave.json"],
-      "enabled": true
-    },
-    "ai-memory": {
-      "type": "remote",
-      "url": "http://127.0.0.1:49374/mcp",
-      "enabled": true
     }
   },
-  "provider": {
+  "providers": {
     "ollama": {
       "name": "Ollama Local",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
+      "settings": {
         "baseURL": "YOUR_OLLAMA_BASE_URL",
         "apiKey": "YOUR_API_KEY_HERE"
       },
@@ -41,7 +41,7 @@
         "gpt-oss:20b": {
           "name": "GPT-OSS"
         },
-        "deepseek-v4-pro:cloud ": {
+        "deepseek-v4-pro:cloud": {
           "name": "DeepSeek V4 Pro"
         },
         "glm-5.3-flash:cloud": {
