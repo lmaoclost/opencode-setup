@@ -249,4 +249,4 @@ install_agents_md
 
 echo "=== Done! ==="
 echo ""
-read -p "Press Enter to exit..."
+read -r -p "Press Enter to exit..." _ || true
