@@ -23,6 +23,7 @@ SKILLS=(
     "vercel-labs/agent-skills@vercel-react-best-practices"
     "anthropics/skills@webapp-testing"
     "obra/superpowers@writing-plans"
+    "obra/superpowers@executing-plans"
     "sickn33/antigravity-awesome-skills@web-security-testing"
 )
 
@@ -91,6 +92,26 @@ install_mcp() {
         fi
     else
         echo "  - npm not found, skipping MCP install"
+    fi
+}
+
+install_ai_memory() {
+    echo "Installing ai-memory..."
+    if command -v ai-memory &> /dev/null; then
+        echo "  - ai-memory already installed: $(ai-memory --version 2>&1)"
+    elif command -v curl &> /dev/null; then
+        echo "  - downloading release binary (checksum-verified)"
+        curl -fsSL https://github.com/akitaonrails/ai-memory/releases/latest/download/install.sh | sh || echo "  - ai-memory install failed"
+    else
+        echo "  - curl not found, skipping ai-memory install"
+        return
+    fi
+
+    if command -v ai-memory &> /dev/null; then
+        echo "  - wiring agents (idempotent, re-running changes nothing)"
+        ai-memory setup --yes || echo "  - ai-memory setup failed (non-fatal)"
+    else
+        echo "  - ai-memory binary unavailable, skipping setup"
     fi
 }
 
@@ -238,6 +259,7 @@ install_mcp
 install_rtk
 install_rtk_plugin
 install_rtk_package
+install_ai_memory
 merge_config
 copy_mcp_config
 install_agents_md

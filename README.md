@@ -4,9 +4,10 @@ Install script for my opencode config, skills, and MCPs.
 
 ## What it installs
 
-- **20 skills** from the skills ecosystem + **3 custom skills** bundled in repo
+- **21 skills** from the skills ecosystem + **3 custom skills** bundled in repo
 - **Playwright MCP** for browser automation
 - **RTK** (Rust Token Killer) for CLI output compression
+- **ai-memory** binary + agent wiring (`ai-memory setup --yes`)
 - **opencode.json** config (merged with existing)
 - **AGENTS.md** instructions
 
@@ -26,10 +27,16 @@ chmod +x install.sh
 
 - Node.js & npm
 - npx (comes with npm)
+- `jq` — the config merge needs it. Without it the script leaves your existing
+  config untouched and writes the template to `opencode.json.new` instead.
 
 ## Configuration
 
 After install, edit `~/.config/opencode/opencode.json` to add your API keys:
 - `CONTEXT7_API_KEY` for context7 MCP
+- `settings.baseURL` / `settings.apiKey` for the ollama provider
+
+The merge is `template * existing`: your values win, template-only keys get
+added. Re-running the installer does not overwrite keys you already set.
 
 For Playwright MCP, edit `~/.config/opencode/playwright-mcp-brave.json` and set your browser path.
