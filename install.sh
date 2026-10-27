@@ -9,12 +9,10 @@ SKILLS=(
     "upstash/context7@context7-mcp"
     "vercel-labs/skills@find-skills"
     "obra/superpowers@finishing-a-development-branch"
-    "github/awesome-copilot@technology-stack-blueprint-generator"
     "anthropics/skills@frontend-design"
     "mattpocock/skills@grill-with-docs"
     "dammyjay93/interface-design@interface-design"
     "forrestchang/andrej-karpathy-skills@karpathy-guidelines"
-    "astro-han/karpathy-llm-wiki@karpathy-llm-wiki"
     "kepano/obsidian-skills@obsidian-cli"
     "kepano/obsidian-skills@obsidian-markdown"
     "neolabhq/context-engineering-kit@root-cause-tracing"
@@ -25,8 +23,6 @@ SKILLS=(
     "vercel-labs/agent-skills@vercel-react-best-practices"
     "anthropics/skills@webapp-testing"
     "obra/superpowers@writing-plans"
-    "mvanhorn/last30days-skill@last30days"
-    "pbakaus/impeccable@impeccable"
     "sickn33/antigravity-awesome-skills@web-security-testing"
 )
 
