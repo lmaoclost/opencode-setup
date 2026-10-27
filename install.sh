@@ -103,22 +103,21 @@ merge_config() {
 
     if [ -f "$CONFIG_FILE" ]; then
         echo "  - existing config found, merging..."
-        # Simple merge: add missing keys from template to existing
-        # This is a basic implementation - for complex merges, use jq
         if command -v jq &> /dev/null; then
             TEMPLATE=$(mktemp)
             # Expand the __HOME__ placeholder before merging
             sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$TEMPLATE"
             tmp=$(mktemp)
-            jq -s '.[0] * .[1]' "$CONFIG_FILE" "$TEMPLATE" > "$tmp"
+            # template * existing: existing scalars win, so real API keys and
+            # model choices survive. Template-only keys still get added.
+            jq -s '.[1] * .[0]' "$CONFIG_FILE" "$TEMPLATE" > "$tmp"
             mv "$tmp" "$CONFIG_FILE"
             rm -f "$TEMPLATE"
             echo "  - config merged"
         else
-            echo "  - jq not found, copying template (backup existing first)"
-            cp "$CONFIG_FILE" "$CONFIG_FILE.backup"
-            sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$CONFIG_FILE"
-            echo "  - template copied (backup at $CONFIG_FILE.backup)"
+            echo "  - jq not found, skipping config merge (existing config kept)"
+            sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/config/opencode.json" > "$CONFIG_FILE.new"
+            echo "  - template written to $CONFIG_FILE.new for manual merge"
         fi
     else
         echo "  - no existing config, copying template"
