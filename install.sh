@@ -244,5 +244,4 @@ copy_mcp_config
 install_agents_md
 
 echo "=== Done! ==="
-echo ""
-read -r -p "Press Enter to exit..." _ || true
+echo "Done. You can close this window."
