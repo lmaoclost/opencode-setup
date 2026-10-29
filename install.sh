@@ -40,6 +40,41 @@ get_skills_dir() {
     fi
 }
 
+install_opencode() {
+    echo "Installing opencode..."
+    if command -v opencode &> /dev/null; then
+        echo "  - opencode already installed: $(opencode --version 2>&1)"
+    elif command -v curl &> /dev/null; then
+        echo "  - downloading official installer"
+        curl -fsSL https://opencode.ai/install | bash || echo "  - opencode install failed"
+    else
+        echo "  - curl not found, skipping opencode install"
+    fi
+}
+
+install_herdr() {
+    echo "Installing herdr..."
+    if command -v herdr &> /dev/null; then
+        echo "  - herdr already installed"
+    elif command -v curl &> /dev/null; then
+        echo "  - downloading official installer"
+        curl -fsSL https://herdr.dev/install.sh | sh || {
+            echo "  - herdr install failed"
+            return
+        }
+        hash -r 2>/dev/null
+    else
+        echo "  - curl not found, skipping herdr install"
+        return
+    fi
+
+    if command -v herdr &> /dev/null; then
+        mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+        echo "  - wiring opencode integration (writes the plugins key into cli.json)"
+        herdr integration install opencode || echo "  - herdr integration failed (non-fatal)"
+    fi
+}
+
 install_skills() {
     echo "Installing skills..."
     SKILLS_DIR=$(get_skills_dir)
@@ -146,16 +181,48 @@ merge_config() {
     fi
 }
 
+detect_browser() {
+    local c p
+    for c in brave brave-browser chromium chromium-browser \
+             google-chrome google-chrome-stable \
+             microsoft-edge microsoft-edge-stable; do
+        p=$(command -v "$c" 2>/dev/null)
+        [ -n "$p" ] && { echo "$p"; return 0; }
+    done
+    for p in /snap/bin/brave /snap/bin/chromium \
+             /var/lib/flatpak/exports/bin/com.brave.Browser \
+             /var/lib/flatpak/exports/bin/org.chromium.Chromium; do
+        [ -x "$p" ] && { echo "$p"; return 0; }
+    done
+    return 1
+}
+
 copy_mcp_config() {
-    echo "Copying MCP config..."
+    echo "Configuring MCP config..."
     CONFIG_DIR="$HOME/.config/opencode"
     mkdir -p "$CONFIG_DIR"
+    local target="$CONFIG_DIR/playwright-mcp-brave.json"
 
-    if [ -f "$CONFIG_DIR/playwright-mcp-brave.json" ]; then
+    if [ -f "$target" ]; then
         echo "  - playwright-mcp-brave.json already exists, skipping"
+        return
+    fi
+
+    cp "$SCRIPT_DIR/mcp/playwright-mcp-brave.json" "$target"
+
+    local browser
+    if browser=$(detect_browser); then
+        echo "  - detected browser: $browser"
+        if command -v jq &> /dev/null; then
+            local tmp
+            tmp=$(mktemp)
+            jq --arg b "$browser" '.browser.launchOptions.executablePath = $b' \
+                "$target" > "$tmp" && mv "$tmp" "$target"
+        else
+            echo "  - jq not found, executablePath stays at the template default"
+        fi
     else
-        cp "$SCRIPT_DIR/mcp/playwright-mcp-brave.json" "$CONFIG_DIR/"
-        echo "  - copied playwright-mcp-brave.json"
+        echo "  - no supported browser found; edit executablePath in $target manually"
     fi
 }
 
@@ -253,6 +320,8 @@ install_rtk_package() {
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+install_opencode
+install_herdr
 install_skills
 install_custom_skills
 install_mcp

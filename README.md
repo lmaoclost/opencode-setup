@@ -8,6 +8,7 @@ Install script for my opencode config, skills, and MCPs.
 - **Playwright MCP** for browser automation
 - **RTK** (Rust Token Killer) for CLI output compression
 - **ai-memory** binary + agent wiring (`ai-memory setup --yes`)
+- **opencode** itself and **herdr** (both via their official install scripts)
 - **opencode.json** config (merged with existing)
 - **AGENTS.md** instructions
 
@@ -39,4 +40,6 @@ After install, edit `~/.config/opencode/opencode.json` to add your API keys:
 The merge is `template * existing`: your values win, template-only keys get
 added. Re-running the installer does not overwrite keys you already set.
 
-For Playwright MCP, edit `~/.config/opencode/playwright-mcp-brave.json` and set your browser path.
+For Playwright MCP, `install.sh` detects the browser (brave, chromium, chrome,
+edge; snap and flatpak included) and writes `executablePath`. No match: edit
+`~/.config/opencode/playwright-mcp-brave.json` manually.
